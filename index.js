@@ -21,7 +21,13 @@ const brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
 let continueGame = true;
-const newColor = Math.floor(Math.random() * 16777215).toString(16);
+
+const createColor = () => {
+  const newColor = Math.floor(Math.random() * 16777215).toString(16);
+  return newColor;
+};
+
+const colorArray = [createColor(), createColor(), createColor(), createColor(), createColor()];
 
 button.onclick = () => {
   continueGame = true;
@@ -40,7 +46,7 @@ for (let c = 0; c < brickColumnCount; c += 1) {
 const displayOnScreen = (text) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.font = '25px apple-system,system-ui';
-  ctx.fillStyle = `#${newColor}`;
+  ctx.fillStyle = `#${colorArray[0]}`;
   ctx.fillText(text, 170, canvas.height / 2);
 };
 
@@ -128,7 +134,7 @@ const drawBricks = () => {
         bricks[c][r].y = brickY;
         ctx.beginPath();
         ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = `#${newColor}`;
+        ctx.fillStyle = `#${colorArray[r + 1]}`;
         ctx.fill();
         ctx.closePath();
       }
