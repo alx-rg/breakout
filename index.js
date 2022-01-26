@@ -1,4 +1,5 @@
 const canvas = document.getElementById('myCanvas');
+const button = document.getElementById('new-game');
 const ctx = canvas.getContext('2d');
 const ballRadius = 10;
 let x = canvas.width / 2;
@@ -10,15 +11,21 @@ const paddleWidth = 75;
 let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
-const brickRowCount = 3;
+const brickRowCount = 4;
 const brickColumnCount = 5;
 const brickWidth = 75;
-const brickHeight = 20;
+const brickHeight = 16;
 const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
+let continueGame = true;
+
+button.onclick = () => {
+  continueGame = true;
+  document.location.reload();
+};
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c += 1) {
@@ -26,6 +33,13 @@ for (let c = 0; c < brickColumnCount; c += 1) {
   for (let r = 0; r < brickRowCount; r += 1) {
     bricks[c][r] = { x: 0, y: 0, status: 1 };
   }
+}
+
+function displayOnScreen(text) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.font = '16px Arial';
+  ctx.fillStyle = '#0095DD';
+  ctx.fillText(text, 170, canvas.height / 1.8);
 }
 
 function mouseMoveHandler(e) {
@@ -67,8 +81,8 @@ function collisionDetection() {
           b.status = 0;
           score += 1;
           if (score === brickRowCount * brickColumnCount) {
-            alert('You Win, Congrats!');
-            document.location.reload();
+            displayOnScreen('You Win, Congrats!');
+            continueGame = false;
           }
         }
       }
@@ -139,8 +153,8 @@ function draw() {
     } else {
       lives -= 1;
       if (!lives) {
-        alert('GAME OVER');
-        document.location.reload();
+        displayOnScreen('GAME OVER');
+        continueGame = false;
       } else {
         x = canvas.width / 2;
         y = canvas.height - 30;
@@ -159,7 +173,9 @@ function draw() {
 
   x += dx;
   y += dy;
-  requestAnimationFrame(draw);
+  if (continueGame) {
+    requestAnimationFrame(draw);
+  }
 }
 
 draw();
