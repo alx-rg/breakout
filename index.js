@@ -21,6 +21,7 @@ const brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
 let continueGame = true;
+let newColor = Math.floor(Math.random() * 16777215).toString(16);
 
 button.onclick = () => {
   continueGame = true;
@@ -37,9 +38,9 @@ for (let c = 0; c < brickColumnCount; c += 1) {
 
 function displayOnScreen(text) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#0095DD';
-  ctx.fillText(text, 170, canvas.height / 1.8);
+  ctx.font = '25px apple-system,system-ui';
+  ctx.fillStyle = `#${newColor}`;
+  ctx.fillText(text, 170, canvas.height / 2);
 }
 
 function mouseMoveHandler(e) {
@@ -126,7 +127,7 @@ function drawBricks() {
         bricks[c][r].y = brickY;
         ctx.beginPath();
         ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = '#0095DD';
+        ctx.fillStyle = `#${newColor}`;
         ctx.fill();
         ctx.closePath();
       }
