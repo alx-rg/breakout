@@ -21,7 +21,7 @@ const brickOffsetLeft = 30;
 let score = 0;
 let lives = 3;
 let continueGame = true;
-let newColor = Math.floor(Math.random() * 16777215).toString(16);
+const newColor = Math.floor(Math.random() * 16777215).toString(16);
 
 button.onclick = () => {
   continueGame = true;
@@ -29,6 +29,7 @@ button.onclick = () => {
 };
 
 const bricks = [];
+
 for (let c = 0; c < brickColumnCount; c += 1) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r += 1) {
@@ -36,43 +37,43 @@ for (let c = 0; c < brickColumnCount; c += 1) {
   }
 }
 
-function displayOnScreen(text) {
+const displayOnScreen = (text) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.font = '25px apple-system,system-ui';
   ctx.fillStyle = `#${newColor}`;
   ctx.fillText(text, 170, canvas.height / 2);
-}
+};
 
-function mouseMoveHandler(e) {
+const mouseMoveHandler = (e) => {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
     paddleX = relativeX - paddleWidth / 2;
   }
-}
+};
 
 document.addEventListener('mousemove', mouseMoveHandler, false);
 
-function keyDownHandler(e) {
+const keyDownHandler = (e) => {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     rightPressed = true;
   } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
     leftPressed = true;
   }
-}
+};
 
 document.addEventListener('keydown', keyDownHandler, false);
 
-function keyUpHandler(e) {
+const keyUpHandler = (e) => {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     rightPressed = false;
   } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
     leftPressed = false;
   }
-}
+};
 
 document.addEventListener('keyup', keyUpHandler, false);
 
-function collisionDetection() {
+const collisionDetection = () => {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
       const b = bricks[c][r];
@@ -89,35 +90,35 @@ function collisionDetection() {
       }
     }
   }
-}
+};
 
-function drawScore() {
+const drawScore = () => {
   ctx.font = '16px Arial';
   ctx.fillStyle = '#0095DD';
   ctx.fillText(`Score: ${score}`, 8, 20);
-}
+};
 
-function drawLives() {
+const drawLives = () => {
   ctx.font = '16px ComicSans';
   ctx.fillStyle = '#0090DD';
   ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-}
+};
 
-function drawBall() {
+const drawBall = () => {
   ctx.beginPath();
   ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
   ctx.fillStyle = '#0095DD';
   ctx.fill();
   ctx.closePath();
-}
-function drawPaddle() {
+};
+const drawPaddle = () => {
   ctx.beginPath();
   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
   ctx.fillStyle = '#0095DD';
   ctx.fill();
   ctx.closePath();
-}
-function drawBricks() {
+};
+const drawBricks = () => {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
       if (bricks[c][r].status === 1) {
@@ -133,9 +134,9 @@ function drawBricks() {
       }
     }
   }
-}
+};
 
-function draw() {
+const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
@@ -177,6 +178,6 @@ function draw() {
   if (continueGame) {
     requestAnimationFrame(draw);
   }
-}
+};
 
 draw();
