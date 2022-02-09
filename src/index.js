@@ -24,8 +24,8 @@ const ballRadius = 10;
 
 let rightPressed = false;
 let leftPressed = false;
-let score = 0;
-let lives = 3;
+// let score = 0;
+// let lives = 3;
 let continueGame = true;
 
 const createColor = () => {
@@ -110,8 +110,6 @@ class Bricks {
   }
 }
 
-const bricks = new Bricks(brickColumnCount, brickRowCount);
-
 class Paddle {
   constructor(x, y, width, height, color = 'blue') {
     this.x = x;
@@ -140,225 +138,187 @@ class Paddle {
   }
 }
 
-const paddle = new Paddle(paddleXStart, paddleYStart, paddleWidth, paddleHeight, colorArray[0]);
-
-class Score {
-  constructor(x, y) {
+class GameText {
+  constructor(text, x, y, color, font = '16px Arial') {
+    this.text = text;
     this.x = x;
     this.y = y;
+    this.color = color;
+    this.value = 0;
+    this.font = font;
   }
-}
 
-class Lives {
-  constructor(x, y = 20) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-class Text {
-  constructor(x, y = 20) {
-    this.x = x;
-    this.y = y;
+  render(ctx) {
+    ctx.font = this.font;
+    ctx.fillStyle = this.color;
+    ctx.fillText(`${this.text} ${this.value}`, this.x, this.y);
   }
 }
 
 class Game {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+  constructor() {
+    this.button = document.getElementById('new-game');
+    this.scoreLabel = new GameText('Score: ', 8, 20);
+    this.liveLabel = new GameText('Lives: ', canvas.width - 65, 20);
+    this.ball = new Ball(0, 0, 2, -2, ballRadius, colorArray[1]);
+    this.paddle = new Paddle(paddleXStart, paddleYStart, paddleWidth, paddleHeight, colorArray[0]);
+    this.bricks = new Bricks(brickColumnCount, brickRowCount);
+    this.winMessage = new GameText('You Win, Congrats!', 170, canvas.height / 2, `#${colorArray[0]}`, '25px apple-system,system-ui');
+    this.loseMessage = new GameText('You Game Overrred', 170, canvas.height / 2, `#${colorArray[0]}`, '25px apple-system,system-ui');
+
+    this.rightPressed = false;
+    this.leftPressed = false;
+
+    this.setup();
+
+    this.draw();
   }
-}
 
-const ball = new Ball(0, 0, 2, -2, ballRadius, colorArray[1]);
-
-const resetBallandPaddle = () => {
-  ball.x = canvas.width / 2;
-  ball.y = canvas.height - 30;
-  ball.dx = 2;
-  ball.dy = -2;
-  paddle.x = paddleXStart;
-};
-
-resetBallandPaddle();
-
-button.onclick = () => {
-  continueGame = true;
-  document.location.reload();
-};
-
-// const bricks = [];
-
-// const initializeBricks = () => {
-//   for (let column = 0; column < brickColumnCount; column += 1) {
-//     bricks[column] = [];
-//     for (let row = 0; row < brickRowCount; row += 1) {
-//       const brickX = (column * (brickWidth + brickPadding)) + brickOffsetLeft;
-//       const brickY = (row * (brickHeight + brickPadding)) + brickOffsetTop;
-//       bricks[column][row] = new Brick(brickX, brickY, brickWidth, brickHeight, colorArray[0], row);
-//     }
-//   }
-// };
-
-// initializeBricks();
-
-const displayOnScreen = (text) => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.font = '25px apple-system,system-ui';
-  ctx.fillStyle = `#${colorArray[0]}`;
-  ctx.fillText(text, 170, canvas.height / 2);
-};
-
-const mouseMoveHandler = (e) => {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) {
-    paddle.moveTo(relativeX - paddle.width / 2, paddleYStart);
+  setup() {
+    this.liveLabel.value = 3;
+    this.resetBallandPaddle();
+    document.addEventListener('mousemove', (e) => {
+      this.mouseMoveHandler(e);
+    }, false);
+    document.addEventListener('keydown', (e) => {
+      this.keyDownHandler(e);
+    }, false);
+    document.addEventListener('keyup', (e) => {
+      this.keyUpHandler(e);
+    }, false);
   }
-};
 
-const moveArrow = (e, direction) => {
-  const arrow = (e.key === direction || e.key === `Arrow${direction}`);
-  return arrow;
-};
-
-const keyDownHandler = (e) => {
-  if (moveArrow(e, 'Right')) {
-    rightPressed = true;
-  } else if (moveArrow(e, 'Left')) {
-    leftPressed = true;
+  resetBallandPaddle() {
+    this.ball.x = canvas.width / 2;
+    this.ball.y = canvas.height - 30;
+    this.ball.dx = 2;
+    this.ball.dy = -2;
+    this.paddle.x = paddleXStart;
   }
-};
 
-const keyUpHandler = (e) => {
-  if (moveArrow(e, 'Right')) {
-    rightPressed = false;
-  } else if (moveArrow(e, 'Left')) {
-    leftPressed = false;
-  }
-};
-
-const movePaddle = () => {
-  if (rightPressed && paddle.x < canvas.width - paddle.width) {
-    paddle.moveBy(7, 0);
-  } else if (leftPressed && paddle.x > 0) {
-    paddle.moveBy(-7, 0);
-  }
-};
-document.addEventListener('mousemove', mouseMoveHandler, false);
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-
-const collisionDetection = () => {
-  for (let c = 0; c < bricks.columns; c += 1) {
-    for (let r = 0; r < bricks.rows; r += 1) {
-      const brick = bricks.bricks[c][r];
-      if (brick.status === 1) {
-        if (ball.x > brick.x && ball.x < brick.x + brickWidth
-          && ball.y > brick.y && ball.y < brick.y + brickHeight) {
-          ball.dy = -ball.dy;
-          brick.status = 0;
-          score += 1;
-          if (score === brickRowCount * brickColumnCount) {
-            displayOnScreen('You Win, Congrats!');
-            continueGame = false;
+  collisionDetection() {
+    for (let c = 0; c < this.bricks.columns; c += 1) {
+      for (let r = 0; r < this.bricks.rows; r += 1) {
+        const brick = this.bricks.bricks[c][r];
+        if (brick.status === 1) {
+          if (this.ball.x > brick.x && this.ball.x < brick.x + brickWidth
+            && this.ball.y > brick.y && this.ball.y < brick.y + brickHeight) {
+            this.ball.dy = -this.ball.dy;
+            brick.status = 0;
+            this.scoreLabel.value += 1;
+            if (this.scoreLabel.value === this.bricks.columns * this.bricks.rows) {
+              this.winMessage.render(ctx);
+              continueGame = false;
+            }
           }
         }
       }
     }
   }
-};
 
-
-
-const drawScore = () => {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = `#${colorArray[1]}`;
-  ctx.fillText(`Score: ${score}`, 8, 20);
-};
-
-const drawLives = () => {
-  ctx.font = '16px ComicSans';
-  ctx.fillStyle = `#${colorArray[2]}`;
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-};
-
-// const drawPaddle = () => {
-//   ctx.beginPath();
-//   ctx.rect(paddle.x, canvas.height - paddleHeight, paddle.width, paddle.height);
-//   ctx.fillStyle = `#${colorArray[0]}`;
-//   ctx.fill();
-//   ctx.closePath();
-// };
-
-// const drawBricks = () => {
-//   for (let c = 0; c < brickColumnCount; c += 1) {
-//     for (let r = 0; r < brickRowCount; r += 1) {
-//       const brick = bricks[c][r];
-//       if (brick.status === 1) {
-//         brick.render(ctx);
-//       }
-//     }
-//   }
-// };
-
-// const moveBall = () => {
-//   ball.x += ball.dx;
-//   ball.y += ball.dy;
-// };
-
-const paddleAndCanvasColissions = () => {
-  if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
-    ball.dx = -ball.dx;
-  } if (ball.y + ball.dy < ballRadius) {
-    ball.dy = -ball.dy;
-  } else if (ball.y + ball.dy > canvas.height - ballRadius) {
-    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-      ball.dy = -ball.dy;
-    } else {
-      lives -= 1;
-      if (!lives) {
-        displayOnScreen('GAME OVER');
-        continueGame = false;
-      } else {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height - 30;
-        ball.dx = 2;
-        ball.dy = -2;
-        paddle.x = paddleXStart;
-      }
+  movePaddle() {
+    if (this.rightPressed && this.paddle.x < canvas.width - this.paddle.width) {
+      this.paddle.moveBy(7, 0);
+    } else if (this.leftPressed && this.paddle.x > 0) {
+      this.paddle.moveBy(-7, 0);
     }
   }
 
-  if (continueGame) {
-    requestAnimationFrame(draw);
+  paddleAndCanvasColissions() {
+    if (this.ball.x + this.ball.dx > canvas.width - this.ball.radius
+      || this.ball.x + this.ball.dx < this.ball.radius) {
+      this.ball.dx = -this.ball.dx;
+    } if (this.ball.y + this.ball.dy < this.ball.radius) {
+      this.ball.dy = -this.ball.dy;
+    } else if (this.ball.y + this.ball.dy > canvas.height - this.ball.radius) {
+      if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
+        this.ball.dy = -this.ball.dy;
+      } else {
+        this.liveLabel.value -= 1;
+
+        if (this.liveLabel.value < 1) {
+          this.loseMessage(ctx);
+          continueGame = false;
+        } else {
+          this.ball.x = canvas.width / 2;
+          this.ball.y = canvas.height - 30;
+          this.ball.dx = 2;
+          this.ball.dy = -2;
+          this.paddle.x = paddleXStart;
+        }
+      }
+    }
+    if (continueGame) {
+      requestAnimationFrame(this.draw);
+    }
   }
-};
+  // button.onclick() {
+  //   continueGame = true;
+  //   document.location.reload();
+  // }
 
-const draw = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // drawBricks();
-  bricks.render(ctx);
-  ball.render(ctx);
-  paddle.render(ctx);
-  // drawPaddle();
-  drawScore();
-  drawLives();
-  collisionDetection();
-  // moveBall();
-  movePaddle();
-  ball.move();
-  paddleAndCanvasColissions();
-};
+  mouseMoveHandler(e) {
+    const relativeX = e.clientX - canvas.offsetLeft;
+    if (this.relativeX > 0 && relativeX < canvas.width) {
+      this.paddle.moveTo(relativeX - this.paddle.width / 2, paddleYStart);
+    }
+  }
 
-draw();
+  // moveArrow(e, direction) {
+  //   const arrow = (e.key === direction || e.key === `Arrow${direction}`);
+  //   return arrow;
+  // }
 
-// const a = new Sprite(20, 40, 200, 40, 'orange');
-// a.render(ctx);
+  keyDownHandler(e) {
+    if (e.key === 'Right' || e.key === 'ArrowRight') {
+      this.rightPressed = true;
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+      this.leftPressed = true;
+    }
+  }
 
-// const b = new Brick(100, 50);
-// b.render(ctx);
+  // keyDownHandler(e) {
+  //   if (this.moveArrow(e, 'Right')) {
+  //     this.rightPressed = true;
+  //   } else if (this.moveArrow(e, 'Left')) {
+  //     this.leftPressed = true;
+  //   }
+  // }
 
-// const ball = new Ball(200, 200, 10);
-// console.log(ball.x);
-// console.log(ball.y);
-// console.log(ball.radius);
+  keyUpHandler(e) {
+    if (e.key === 'Right' || e.key === 'ArrowRight') {
+      this.rightPressed = false;
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+      this.leftPressed = false;
+    }
+  }
+  // keyUpHandler(e) {
+  //   if (this.moveArrow(e, 'Right')) {
+  //     this.rightPressed = false;
+  //   } else if (this.moveArrow(e, 'Left')) {
+  //     this.leftPressed = false;
+  //   }
+  // }
+
+  draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.bricks.render(ctx);
+    this.ball.render(ctx);
+    this.paddle.render(ctx);
+    this.scoreLabel.render(ctx);
+    this.liveLabel.render(ctx);
+    this.collisionDetection();
+    this.movePaddle();
+    this.ball.move();
+    this.paddleAndCanvasColissions();
+
+    // requestAnimationFrame(this.draw.bind(this));
+    requestAnimationFrame(() => {
+      this.draw();
+    });
+  }
+} // ------------------------------------------------
+
+const game = new Game();
+
+// draw();
