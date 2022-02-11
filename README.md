@@ -2,10 +2,16 @@
 
 ## What is this game?
 
+Breakout is an arcade video game developed and published by Atari, Inc. and released on May 13, 1976. It was designed by Steve Wozniak, based on conceptualization from Nolan Bushnell and Steve Bristow who were influenced by the seminal 1972 Atari arcade game Pong. **In Breakout, a layer of bricks lines the top third of the screen and the goal is to destroy them all by repeatedly bouncing a ball off a paddle into them.** The arcade game was released in Japan by Namco. Breakout was a worldwide commercial success, among the top five highest-grossing arcade video games of 1976 in both the United States and Japan. The 1978 Atari VCS port uses color graphics instead of a monochrome screen with colored overlay. [Wiki Breakout (video game)](https://en.wikipedia.org/wiki/Breakout_(video_game)#:~:text=Breakout%20is%20an%20arcade%20video,1972%20Atari%20arcade%20game%20Pong.&text=The%20arcade%20game%20was%20released%20in%20Japan%20by%20Namco.)
+
 ## Why was it made?
 
+This game of breakout was made to allow the creator (me) to practice writing JS and learn about the concepts behind OOP, classes, inheritance along with bundling he code and writting this nice ReadMe in Markdown. 
+
 ### Image
-[Image of Breakout game](breakout.png)
+
+<img src="./breakout.png" alt="Image of Breakout Game"/>
+
 ### To Play
 
 - [x] Open the game in a live server through your VSCode
@@ -18,9 +24,6 @@
 - Javascript
 - Written on VSCode
 - Used 
-
-## Brief History of the Breakout Game
-Breakout is an arcade video game developed and published by Atari, Inc. and released on May 13, 1976. It was designed by Steve Wozniak, based on conceptualization from Nolan Bushnell and Steve Bristow who were influenced by the seminal 1972 Atari arcade game Pong. In Breakout, a layer of bricks lines the top third of the screen and the goal is to destroy them all by repeatedly bouncing a ball off a paddle into them. The arcade game was released in Japan by Namco. Breakout was a worldwide commercial success, among the top five highest-grossing arcade video games of 1976 in both the United States and Japan. The 1978 Atari VCS port uses color graphics instead of a monochrome screen with colored overlay. [Wiki Breakout (video game)](https://en.wikipedia.org/wiki/Breakout_(video_game)#:~:text=Breakout%20is%20an%20arcade%20video,1972%20Atari%20arcade%20game%20Pong.&text=The%20arcade%20game%20was%20released%20in%20Japan%20by%20Namco.)
 
 ## Steve Wozniak about Breakout:
 
