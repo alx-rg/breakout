@@ -1,4 +1,4 @@
-// import Sprite from './sprite.js';
+import Sprite from './sprite.js';
 
 // class Ball extends Sprite {
 //   constructor(x = 0, y = 0, radius = 10, color = '#0095DD') {
@@ -7,12 +7,9 @@
 //     this.dx = 2;
 //     this.dy = -2;
 //   }
-const pi2 = Math.PI * 2;
-
-class Ball {
+class Ball extends Sprite {
   constructor(x = 0, y = 0, dx = 2, dy = -2, radius = 10, color = 'red') {
-    this.x = x;
-    this.y = y;
+    super(x, y, 0, 0, color);
     this.dx = dx;
     this.dy = dy;
     this.radius = radius;
@@ -29,8 +26,7 @@ class Ball {
   }
 
   move() {
-    this.x += this.dx;
-    this.y += this.dy;
+    this.moveBy(this.dx, this.dy);
   }
 }
 export default Ball;
